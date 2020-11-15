@@ -4,19 +4,19 @@
 
 #define WIFI_SSID "TP-LINK_3EAE"
 #define WIFI_PASS "49836318"
-
 #define MQTT_SERV "io.adafruit.com"
 #define MQTT_PORT 1883
 #define MQTT_NAME "sharonushusbabu"
-#define MQTT_PASS "aio_EAIi32mM0XKpLzzdQI3OOtdmqjeO"
+#define MQTT_PASS "aio_nojn47dujDQMqfl9m78gDoC3Ljcz"
 
+//the gpio pin D1
 int led = D1;
 
 WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERV, MQTT_PORT, MQTT_NAME, MQTT_PASS);
 
-Adafruit_MQTT_Subscribe onoff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_NAME "/f/ONOF");
-Adafruit_MQTT_Publish LightsStatus = Adafruit_MQTT_Publish(&mqtt, MQTT_NAME "/f/LightsStatus");
+Adafruit_MQTT_Subscribe onoff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_NAME "/feeds/ONOF");
+Adafruit_MQTT_Publish LightsStatus = Adafruit_MQTT_Publish(&mqtt, MQTT_NAME "/feeds/LightsStatus");
 
 
 void setup()
@@ -30,12 +30,14 @@ void setup()
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   digitalWrite(LED_BUILTIN, LOW);
 
+  // Wait for the WiFi to be connected
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(">");
     delay(50);
   }
 
+  // Now connected
   Serial.println("OK!");
 
   //Subscribe to the onoff topic
@@ -88,20 +90,16 @@ void loop()
       //LightsStatus.publish("ERROR");
     }
   }
-  //  if (!mqtt.ping())
-  //  {
-  //    mqtt.disconnect();
-  //  }
 }
 
 
 void MQTT_connect()
 {
 
-  //  // Stop if already connected
+  // Stop and return, if already connected
   if (mqtt.connected() && mqtt.ping())
   {
-    //    mqtt.disconnect();
+    //mqtt.disconnect();
     return;
   }
 
